@@ -1,0 +1,16 @@
+#!/bin/sh
+
+IMAGE_FILE = /usr/share/zaltys/zmp003-firmware/zmp003_cpu1_spi_hub/images/v2/zmp003_cpu1_spi_hub.image
+
+# Setup GPIO to control Spartan6 PROGB line
+echo 132 >/sys/class/gpio/export
+
+# Hold PROGB low to disable FPGA
+echo out >/sys/class/gpio/gpio132/direction
+echo 0 >/sys/class/gpio/gpio132/value
+
+# Program FPGA SPI ROM
+flashrom -p linux_spi:dev=/dev/spidev4.1 -c S25FL128S......0 -w ${IMAGE_FILE}
+
+# Raise PROGB high to allow FPGA to reconfigure
+echo 1 >/sys/class/gpio/gpio132/value
