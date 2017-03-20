@@ -1,6 +1,6 @@
 #!/bin/sh
 
-IMAGE_FILE = /usr/share/zaltys/zmp003-cpu1-firmware/spi-hub/images/v2/zmp003_cpu1_spi_hub.image
+IMAGE_FILE=/usr/share/zaltys/zmp003-cpu1-firmware/spi-hub/images/v2/zmp003_cpu1_spi_hub.image
 
 # Setup GPIO to control Spartan6 PROGB line
 echo 132 >/sys/class/gpio/export
