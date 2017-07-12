@@ -23,7 +23,9 @@ exit 1
 fi
 
 # Setup GPIO to control the FPGA PROGB line
+if ! [ -e /sys/class/gpio/gpio${GPIO} ]; then
 echo ${GPIO} >/sys/class/gpio/export
+fi
 
 # Hold PROGB low to disable FPGA
 echo out >/sys/class/gpio/gpio${GPIO}/direction
