@@ -1,0 +1,36 @@
+#!/bin/sh
+
+# The SPI-HUB Spartan6 FPGA image maps the C3FPGA_GPIO1 line to
+# PROGB of the secondary FPGA of the first attached ZMP003-FPGA1 board.
+
+# On the iMX processor, C3FPGA_GPIO1 is on pin EIM_A17, which is
+# internally muxed to the GPIO2_IO21 signal.
+
+# From the Linux kernel's perspective GPIO2_IO21 => (2-1)*32 + 21 = 53
+
+# A similar arrangement is present for the second attached ZMP003-FPGA
+# board, but with C3FPGA_GPIO3, EIM_A19, GPIO2_IO19.
+
+if [ "$1" = "" ] || [ "$1" = "1" ]; then
+# first board
+GPIO=53
+elif [ "$1" = "2" ]; then
+# second board
+GPIO=51
+else
+echo "Unknown board number: $1.  Use '1' or '2' only."
+exit 1
+fi
+
+# Setup GPIO to control the FPGA PROGB line
+echo ${GPIO} >/sys/class/gpio/export
+
+# Hold PROGB low to disable FPGA
+echo out >/sys/class/gpio/gpio${GPIO}/direction
+echo 0 >/sys/class/gpio/gpio${GPIO}/value
+
+# Pause for 1 second
+sleep 1
+
+# Raise PROGB high to allow FPGA to reconfigure
+echo 1 >/sys/class/gpio/gpio${GPIO}/value
