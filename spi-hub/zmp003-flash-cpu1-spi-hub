@@ -1,0 +1,30 @@
+#!/bin/sh
+
+if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
+    echo "Usage: $0 [<filename>]"
+    echo "  where filename defaults to standard image if not supplied."
+    exit 0
+elif [ "$1" = "" ]; then
+    IMAGE_FILE=/usr/share/zaltys/zmp003-cpu1-firmware/spi-hub/images/v2/zmp003_cpu1_spi_hub.image
+else
+    IMAGE_FILE="$1"
+fi
+
+echo "Using image file: ${IMAGE_FILE}"
+
+GPIO=132
+
+# Setup GPIO line
+if ! [ -e /sys/class/gpio/gpio${GPIO} ]; then
+    echo ${GPIO} >/sys/class/gpio/export
+fi
+echo out >/sys/class/gpio/gpio${GPIO}/direction
+
+# Hold PROGB low to disable FPGA
+echo 0 >/sys/class/gpio/gpio${GPIO}/value
+
+# Program FPGA SPI ROM
+flashrom -p linux_spi:dev=/dev/spidev4.1 -c S25FL128S......0 -w ${IMAGE_FILE}
+
+# Raise PROGB high to allow FPGA to reconfigure
+echo 1 >/sys/class/gpio/gpio${GPIO}/value

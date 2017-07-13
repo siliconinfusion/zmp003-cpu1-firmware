@@ -11,24 +11,28 @@
 # A similar arrangement is present for the second attached ZMP003-FPGA
 # board, but with C3FPGA_GPIO3, EIM_A19, GPIO2_IO19.
 
-if [ "$1" = "" ] || [ "$1" = "1" ]; then
-# first board
-GPIO=53
+if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
+    echo "Usage: $0 [<boardnum>]"
+    echo "  where boardnum is '1' or '2', defaulting to '1' if not present."
+    exit 0
+elif [ "$1" = "" ] || [ "$1" = "1" ]; then
+    # first board
+    GPIO=53
 elif [ "$1" = "2" ]; then
-# second board
-GPIO=51
+    # second board
+    GPIO=51
 else
-echo "Unknown board number: $1.  Use '1' or '2' only."
-exit 1
+    echo "Unknown board number: $1.  Use '1' or '2' only."
+    exit 1
 fi
 
 # Setup GPIO to control the FPGA PROGB line
 if ! [ -e /sys/class/gpio/gpio${GPIO} ]; then
-echo ${GPIO} >/sys/class/gpio/export
+    echo ${GPIO} >/sys/class/gpio/export
 fi
+echo out >/sys/class/gpio/gpio${GPIO}/direction
 
 # Hold PROGB low to disable FPGA
-echo out >/sys/class/gpio/gpio${GPIO}/direction
 echo 0 >/sys/class/gpio/gpio${GPIO}/value
 
 # Pause for 1 second
