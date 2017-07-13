@@ -1,0 +1,23 @@
+#!/bin/sh
+
+if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
+    echo "Usage: $0"
+    exit 0
+fi
+
+GPIO=132
+
+# Setup GPIO line
+if ! [ -e /sys/class/gpio/gpio${GPIO} ]; then
+    echo ${GPIO} >/sys/class/gpio/export
+fi
+echo out >/sys/class/gpio/gpio${GPIO}/direction
+
+# Hold PROGB low to disable FPGA
+echo 0 >/sys/class/gpio/gpio${GPIO}/value
+
+# Pause for 1 second
+sleep 1
+
+# Raise PROGB high to allow FPGA to reconfigure
+echo 1 >/sys/class/gpio/gpio${GPIO}/value
