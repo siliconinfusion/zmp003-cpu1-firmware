@@ -1,0 +1,19 @@
+#!/bin/sh
+### BEGIN INIT INFO
+# Provides: zmp003-fpga1
+# Required-Start:
+# Required-Stop:
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: Enable programming of attached ZMP003-FPGA1 board FPGAs
+### END INIT INFO
+
+if [ "$1" = "start" ] || [ "$1" = "reload" ]; then
+   zmp003-reload-fpga1-primary   1
+   zmp003-reload-fpga1-secondary 1
+   zmp003-reload-fpga1-primary   2
+   zmp003-reload-fpga1-secondary 2
+else
+    echo "Usage: /etc/init.d/zmp003-fpga1 {start|reload}"
+    exit 1
+fi
