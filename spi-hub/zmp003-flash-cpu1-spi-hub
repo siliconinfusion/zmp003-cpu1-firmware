@@ -5,7 +5,7 @@ if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
     echo "  where filename defaults to standard image if not supplied."
     exit 0
 elif [ "$1" = "" ]; then
-    IMAGE_FILE=/usr/share/zaltys/zmp003-cpu1-firmware/spi-hub/images/v2/zmp003_cpu1_spi_hub.image
+    IMAGE_FILE=/usr/share/zaltys/zmp003-cpu1-firmware/spi-hub/images/v3/zmp003_cpu1_spi_hub.image
 else
     IMAGE_FILE="$1"
 fi
